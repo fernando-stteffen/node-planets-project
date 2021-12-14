@@ -1,7 +1,10 @@
 const { parse } = require('csv-parse') 
 const fs = require('fs');
 
-const dataChuncks = []
+const habitablePlanets = []
+
+const isHabitablePlanet = (planet) => planet['koi_disposition'] === 'CONFIRMED'
+
 
 fs.createReadStream('kapler_data_12_21.csv')
   .pipe(parse({
@@ -9,13 +12,15 @@ fs.createReadStream('kapler_data_12_21.csv')
     columns: true
   }))
   .on('data', (data) => {
-    dataChuncks.push(data)
+    if (isHabitablePlanet(data)) {
+      habitablePlanets.push(data)
+    }
   })
   .on('error', (error) => {
     console.log(error)
   })
   .on('end', () => {
-    //console.log(dataChuncks)
+    console.log(habitablePlanets)
     console.log('Done')
   })
 
